@@ -1,4 +1,4 @@
-import { useReducer } from 'react';
+import { useReducer, useMemo } from 'react';
 import FeedbackOptions from './components/Feedback/Feedback';
 import Section from 'components/Section/Section';
 import Statistics from 'components/Statistics/Statistics';
@@ -36,17 +36,11 @@ const App = () => {
   const updateIncrement = feedback => {
     dispatch({ type: `increment ${feedback}` });
   };
-  const countTotalFeedback = () => {
+  const totalValue = useMemo(() => {
     const total = state.good + state.neutral + state.bad;
-    return total;
-  };
-  const countPositiveFeedbackPercentage = total => {
     const positiveFeedback = (state.good / total) * 100;
-    return positiveFeedback;
-  };
-  const totalValue = countTotalFeedback();
-  const positiveFeedbackPercentage =
-    countPositiveFeedbackPercentage(totalValue);
+    return { total, positiveFeedback };
+  }, [state.bad, state.good, state.neutral]);
   return (
     <>
       <Section title="Please leave feedback">
@@ -56,15 +50,15 @@ const App = () => {
         />
       </Section>
       <Section title="Statistics">
-        {!totalValue ? (
+        {!totalValue.total ? (
           <Notification message="There is no feedback" />
         ) : (
           <Statistics
             good={state.good}
             neutral={state.neutral}
             bad={state.bad}
-            total={totalValue}
-            positivePercentage={positiveFeedbackPercentage}
+            total={totalValue.total}
+            positivePercentage={totalValue.positiveFeedback}
           />
         )}
       </Section>

@@ -3,29 +3,22 @@ import FeedbackOptions from './components/Feedback/Feedback';
 import Section from 'components/Section/Section';
 import Statistics from 'components/Statistics/Statistics';
 import Notification from 'components/Notification/Notification';
-const initialState = {
-  good: 0,
-  neutral: 0,
-  bad: 0,
-};
+
 const reducer = (state, action) => {
   switch (action.type) {
     case 'increment good':
       return {
+        ...state,
         good: state.good + 1,
-        neutral: state.neutral,
-        bad: state.bad,
       };
     case 'increment neutral':
       return {
-        good: state.good,
+        ...state,
         neutral: state.neutral + 1,
-        bad: state.bad,
       };
     case 'increment bad':
       return {
-        good: state.good,
-        neutral: state.neutral,
+        ...state,
         bad: state.bad + 1,
       };
     default:
@@ -34,7 +27,11 @@ const reducer = (state, action) => {
 };
 
 const App = () => {
-  const [state, dispatch] = useReducer(reducer, initialState);
+  const [state, dispatch] = useReducer(reducer, {
+    good: 0,
+    neutral: 0,
+    bad: 0,
+  });
 
   const updateIncrement = feedback => {
     dispatch({ type: `increment ${feedback}` });
